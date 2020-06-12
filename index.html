@@ -12,7 +12,6 @@
   <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href="/map.css" rel="stylesheet">
-    <script src="/tan-map.js"></script>
   <style>
 
   </style>
@@ -20,14 +19,7 @@
 
 <body>
   <div id="map"></div>
-<div class="card mb-3">
-       <img class="card-img-top" src="" alt="Card image cap">
-       <div class="card-body">
-           <h4 class="card-title">Card title</h4>
-           <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-           <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-       </div>
-   </div>
+
 <script>    var transformRequest = (url, resourceType) => {
       var isMapboxRequest =
         url.slice(8, 22) === "api.mapbox.com" ||
