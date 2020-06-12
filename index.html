@@ -10,77 +10,25 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.css" rel="stylesheet" />
   <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
   <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="/map.css" rel="stylesheet">
+    <script src="/tan-map.js"></script>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
 
-    #map {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-    }
-
-    /* Popup styling */
-
-    .mapboxgl-popup {
-      padding-bottom: 5px;
-    }
-
-    .mapboxgl-popup-close-button {
-      display: none;
-    }
-
-    .mapboxgl-popup-content {
-      font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
-      padding: 0;
-      width: 250px;
-    }
-
-    .mapboxgl-popup-content-wrapper {
-      padding: 1%;
-    }
-
-    .mapboxgl-popup-content h3 {
-      background: rgb(61, 59, 59);
-      text-align: center;
-      color: #fff;
-      margin: 0;
-      display: block;
-      padding: 15px;
-      font-weight: 700;
-      margin-top: -5px;
-    }
-
-    .mapboxgl-popup-content h4 {
-      margin: 0;
-      display: block;
-      padding: 10px 3px 10px 10px;
-      font-weight: 400;
-    }
-
-    .mapboxgl-container {
-      cursor: pointer;
-    }
-
-    .mapboxgl-popup-anchor-top>.mapboxgl-popup-content {
-      margin-top: 3px;
-    }
-
-    .mapboxgl-popup-anchor-top>.mapboxgl-popup-tip {
-      border-bottom-color: rgb(61, 59, 59);
-    }
   </style>
 </head>
 
 <body>
-
-  <div id='map'></div>
-  <script>
-
-    var transformRequest = (url, resourceType) => {
+  <div id="map"></div>
+<div class="card mb-3">
+       <img class="card-img-top" src="" alt="Card image cap">
+       <div class="card-body">
+           <h4 class="card-title">Card title</h4>
+           <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+           <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+       </div>
+   </div>
+<script>    var transformRequest = (url, resourceType) => {
       var isMapboxRequest =
         url.slice(8, 22) === "api.mapbox.com" ||
         url.slice(10, 26) === "tiles.mapbox.com";
@@ -118,7 +66,6 @@
           delimiter: ','
         }, function (err, data) {
           map.on('load', function () {
-
             //Add the the layer to the map 
             map.addLayer({
               'id': 'csvData',
@@ -131,18 +78,22 @@
                 'circle-radius': 5,
                 'circle-color': "#a5100e"
               }
-            });
-
-
+            }
+);
+              
             // When a click event occurs on a feature in the csvData layer, open a popup at the
             // location of the feature, with description HTML from its properties.
-            map.on('click', 'csvData', function (e) {
+            
+              map.on('click', 'csvData', function (e) {
               var coordinates = e.features[0].geometry.coordinates.slice();
 
               //set popup text 
               //You can adjust the values of the popup to match the headers of your CSV. 
-              // For example: e.features[0].properties.Name is retrieving information from the field Name in the original CSV. 
-              var description = `<h3>` + e.features[0].properties.project + `</h3>`;
+              // For example: e.features[0].properties.Name is retrieving information from the field Name in the original CSV.   
+                  var image = e.features[0].properties.image;
+                  var project = e.features[0].properties.project;
+                  var blurb = e.features[0].properties.blurb
+              var description = '<div><h3>' + project + '</h3>' + '<img src="' + image + '" /><br><p>' + blurb + '</p></div>'; 
 
               // Ensure that if the map is zoomed out such that multiple
               // copies of the feature are visible, the popup appears
@@ -150,13 +101,14 @@
               while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
-
+            map.flyTo({ center: e.features[0].geometry.coordinates, zoom:9});
               //add Popup to map
 
-              new mapboxgl.Popup()
+              new mapboxgl.Popup({className:"tan-pop"})
                 .setLngLat(coordinates)
                 .setHTML(description)
-                .addTo(map);
+                .addTo(map)
+                .setMaxWidth("none");
             });
 
             // Change the cursor to a pointer when the mouse is over the places layer.
@@ -171,17 +123,14 @@
 
             var bbox = turf.bbox(data);
             map.fitBounds(bbox, { padding: 50 });
-
-          });
+		
+                           }
+               
+            );
 
         });
       };
-    });
-
-
-
-
-  </script>
+    });</script>
 
 </body>
 
