@@ -11,15 +11,88 @@
   <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
   <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link href="/map.css" rel="stylesheet">
+    <link href="../Project%20Map/map.css" rel="stylesheet">
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
 
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+        right:0;
+      width: 100%;
+    }
+
+    /* Popup styling */
+
+    .mapboxgl-popup {
+      padding-bottom: 5px;
+    }
+
+    .mapboxgl-popup-close-button {
+      display: none;
+    }
+
+    .mapboxgl-popup-content {
+      font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+      padding: 0;
+        max-width:auto;
+    }
+
+    .mapboxgl-popup-content-wrapper {
+      padding: 1%;
+    }
+
+    .mapboxgl-popup-content h3 {
+      background: rgb(61, 59, 59);
+      text-align: center;
+      color: #fff;
+      margin: 0;
+      display: block;
+      padding: 15px;
+      font-weight: 700;
+      margin-top: -5px;
+    }
+
+    .mapboxgl-popup-content h4 {
+      margin: 0;
+      display: block;
+      padding: 10px 3px 10px 10px;
+      font-weight: 400;
+    }
+
+    .mapboxgl-container {
+      cursor: pointer;
+    }
+
+    .mapboxgl-popup-anchor-top>.mapboxgl-popup-content {
+      margin-top: 3px;
+    }
+
+    .mapboxgl-popup-anchor-top>.mapboxgl-popup-tip {
+      border-bottom-color: rgb(61, 59, 59);
+   }
+   .mapboxgl-popup-tip {
+    display:none
+   }
+   .mapboxgl-popup.popup-container.mapboxgl-popup-anchor-bottom,.mapboxgl-popup.popup-container.mapboxgl-popup-anchor-top {
+    position: absolute!important;
+    left: 5%;
+    transform: none!important;
+    top: 5%;
+   }
   </style>
 </head>
 
 <body>
   <div id="map"></div>
-
+<ul class="list-group" id="tan-menu">
+       <li class="list-group-item active">Cras justo odio</li>
+       <li class="list-group-item">Dapibus ac facilisis in</li>
+   </ul>
 <script>    var transformRequest = (url, resourceType) => {
       var isMapboxRequest =
         url.slice(8, 22) === "api.mapbox.com" ||
@@ -31,7 +104,7 @@
       };
     };
     //YOUR TURN: add your Mapbox token 
-    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FyYXRhbmdyYW0iLCJhIjoiY2tiY2Q5NDJzMDBydzJxb2p3bWY1bTRyZCJ9.qntmOogKc9bRahrF5Sdphw'; //Mapbox token 
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FyYXRhbmdyYW0iLCJhIjoiY2tiYXZ4d3VpMHMzbTJ0bnZobHppaXM0NiJ9.aHmCdpQ10sM8mWb_XqGgtg'; //Mapbox token 
     var map = new mapboxgl.Map({
       container: 'map', // container id
       style: 'mapbox://styles/saratangram/ckbawrykf02jg1impuqmzyrx6', //stylesheet location
@@ -44,7 +117,7 @@
       $.ajax({
         type: "GET",
         //YOUR TURN: Replace with csv export link
-        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuMCOaj2anYtND-7Yw4eFuUTC0RPWbKzFyCVG6FT9tD1wUerI-QVKTGiq1nPzYq2KxdHyq0Nh5RfEd/pub?output=csv',
+        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmRnLmKO1zcjDsjRNWQqUSU6Nas1ujNOV-zCKjMLFSpq-h3nB34wvb6w2-msYBkHDLcI7L5L4-5kD0/pub?output=csv',
         dataType: "text",
         success: function (csvData) { makeGeoJSON(csvData); }
       });
@@ -56,9 +129,12 @@
           latfield: 'latitude',
           lonfield: 'longitude',
           delimiter: ','
-        }, function (err, data) {
-          map.on('load', function () {
+        }, 
+    function (err, data) {
+    
+            map.on('load', function () {
             //Add the the layer to the map 
+
             map.addLayer({
               'id': 'csvData',
               'type': 'circle',
@@ -72,10 +148,33 @@
               }
             }
 );
-              
+                data.features.forEach(function(store, i){
+  store.properties.id = i;
+});
+            function buildList() {
+                data.features.forEach(function (store, i) {
+                    var prop = store.properties;
+                    var listings = document.getElementById('tan-menu');
+                    var listing = listings.appendChild(document.createElement('li'));
+                    listing.id = prop.id;
+                    /* Assign the `item` class to each listing for styling. */
+                    listing.className = 'list-group-item';
+                    /* Add the link to the individual listing created above. */
+    var link = listing.appendChild(document.createElement('a'));
+    link.href = '#';
+    link.className = 'menu-project';
+    link.id = "link-" + prop.id;
+    link.innerHTML = prop.project;
+    var details = listing.appendChild(document.createElement('p'));
+                    details.innerHTML = prop.place_name;
+                    details.className = 'menu-details';
+                    
+                });
+            };
+                buildList(data);
             // When a click event occurs on a feature in the csvData layer, open a popup at the
             // location of the feature, with description HTML from its properties.
-            
+                
               map.on('click', 'csvData', function (e) {
               var coordinates = e.features[0].geometry.coordinates.slice();
 
@@ -85,22 +184,21 @@
                   var image = e.features[0].properties.image;
                   var project = e.features[0].properties.project;
                   var blurb = e.features[0].properties.blurb
-              var description = '<div><h3>' + project + '</h3>' + '<img src="' + image + '" /><br><p>' + blurb + '</p></div>'; 
-
+              var description = '<div class="tan-pop"   ><h3>' + project + '</h3>' + '<img src="' + image + '" /><br><p>' + blurb + '</p></div>';                 
               // Ensure that if the map is zoomed out such that multiple
               // copies of the feature are visible, the popup appears
               // over the copy being pointed to.
               while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
-            map.flyTo({ center: e.features[0].geometry.coordinates, zoom:9});
+            map.flyTo({ center: e.features[0].geometry.coordinates, zoom:17, pitch:60});
               //add Popup to map
-
-              new mapboxgl.Popup({className:"tan-pop"})
+            
+              new mapboxgl.Popup({className: 'popup-container'})
                 .setLngLat(coordinates)
                 .setHTML(description)
                 .addTo(map)
-                .setMaxWidth("none");
+                .setMaxWidth("40vw");
             });
 
             // Change the cursor to a pointer when the mouse is over the places layer.
@@ -115,6 +213,7 @@
 
             var bbox = turf.bbox(data);
             map.fitBounds(bbox, { padding: 50 });
+
 		
                            }
                
@@ -122,7 +221,8 @@
 
         });
       };
-    });</script>
+    });
+                    </script>
 
 </body>
 
