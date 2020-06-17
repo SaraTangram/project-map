@@ -11,7 +11,8 @@
   <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
   <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link href="/project-map/map.css" rel="stylesheet">
+    <link href="map.css" rel="stylesheet">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -89,8 +90,20 @@
 
 <body>
   <div id="map"></div>
+    <div id="prop-modal">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">Launch demo modal</button>
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+            <div class="modal-body">
+                <ul class="list-group-modal" id="tan-menu">
+        </ul>
+               <!-- Insert content here -->
+            </div>
+            
+      </div>
+   </div>
 <ul class="list-group" id="tan-menu">
-   </ul>
+        </ul></div>
 <script>    var transformRequest = (url, resourceType) => {
       var isMapboxRequest =
         url.slice(8, 22) === "api.mapbox.com" ||
@@ -170,6 +183,7 @@
                 });
             };
                 buildList(data);
+            
             // When a click event occurs on a feature in the csvData layer, open a popup at the
             // location of the feature, with description HTML from its properties.
                 
@@ -189,7 +203,7 @@
               while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
-            map.flyTo({ center: e.features[0].geometry.coordinates, zoom:17, pitch:60});
+            map.flyTo({ center: e.features[0].geometry.coordinates, zoom:17});
               //add Popup to map
             
               new mapboxgl.Popup({className: 'popup-container'})
