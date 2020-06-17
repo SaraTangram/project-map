@@ -208,14 +208,6 @@
             map.on('mouseleave', 'places', function () {
               map.getCanvas().style.cursor = '';
             });
-	    //pitch set
-                var zoomThreshold = 15;
-                map.on('zoom', function() {
-                if (map.getZoom() < zoomThreshold) {
-                map.setPitch(20)} else {map.setPitch(60)}
-                });
-            var bbox = turf.bbox(data);
-            map.fitBounds(bbox, { padding: 50 });
 
 		
                            }
