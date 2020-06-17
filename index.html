@@ -172,7 +172,7 @@
                     listing.className = 'list-group-item';
                     /* Add the link to the individual listing created above. */
     var link = listing.appendChild(document.createElement('a'));
-    var projectPosition = e.features[0].geometry.coordinates;
+    var projectPosition = prop.geometry.coordinates;
     link.href = projectPosition;
     link.className = 'menu-project';
     link.id = "link-" + prop.id;
