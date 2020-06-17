@@ -173,7 +173,7 @@
                     /* Add the link to the individual listing created above. */
     var link = listing.appendChild(document.createElement('a'));
     var projectPosition = prop.place_name;
-    link.data-location = `"` + projectPosition `"`;
+    link.href = `"` + projectPosition `"`;
     link.className = 'menu-project';
     link.id = "link-" + prop.id;
     link.innerHTML = prop.project;
