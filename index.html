@@ -203,7 +203,7 @@
               while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
-            map.flyTo({ center: e.features[0].geometry.coordinates, zoom:17});
+            map.flyTo({ center: e.features[0].geometry.coordinates, zoom:17, pitch:60});
               //add Popup to map
             
               new mapboxgl.Popup({className: 'popup-container'})
