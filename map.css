@@ -19,8 +19,27 @@
 }
 .list-group-modal {
     position:relative;
-    padding:0
-        max-width:23vw;
+    padding:0;
+}
+.list-group-item {
+    padding:.9rem 1.5rem;
+    background-color:#191919c2;
+    transition: background-color 300ms ease-in;
+}
+.list-group-item:hover {
+    background-color: #191919ed;
+}
+.list-group-item a {
+    color:#bebebe;
+    transition:color 300ms ease-out;
+}
+.list-group-item a:hover {
+    text-decoration: none;
+    color:#ffffff;
+}
+.list-group-item.active {
+    background-color: #a5100e;
+    border-color: #a5100e;
 }
 p.menu-details {
     font-size: .7rem;
@@ -32,7 +51,46 @@ p.menu-details {
 div#prop-modal {
     position:relative;
 }
+.modal-backdrop {
+    display:none;
+}
 
 .modal-dialog {
     margin:1.75rem auto 1.75rem 0;
+    pointer-events: auto;
+}
+
+#accordion {
+    position: relative;
+    max-width: 23vw;
+    margin-left: auto;
+    margin-right: 1rem;
+    margin-top: 1rem;
+}
+.d-block {
+    position: relative;
+    display: block!important;
+    padding: .75rem;
+    text-align:center;
+    font-weight:400;  
+    letter-spacing: 1px;
+    font-size:1.2rem;
+    text-transform:uppercase;
+    background: #262626;
+    color: #ffffffa3;
+    border-radius: 4px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: -2px;
+}
+.city-button a, .city-button {
+    color:white!important;
+        max-width: 23vw;
+    margin-left: auto;
+    margin-right: 1rem;
+    margin-top: 1rem;
+}
+.d-block:hover {
+    text-decoration: none;
+    color: #ffffffaf;
 }
