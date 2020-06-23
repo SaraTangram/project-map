@@ -62,7 +62,7 @@ div#prop-modal {
 
 #accordion {
     position: relative;
-    max-width: 23vw;
+    max-width: 19vw;
     margin-left: auto;
     margin-right: 1rem;
     margin-top: 1rem;
@@ -83,14 +83,34 @@ div#prop-modal {
     border-bottom-right-radius: 0;
     margin-bottom: -2px;
 }
-.city-button a, .city-button {
+#icon-button a, #icon-button {
     color:white!important;
         max-width: 23vw;
     margin-left: auto;
     margin-right: 1rem;
     margin-top: 1rem;
+    width:70px;
+    height: 70px;
+    border-radius: 4px
 }
 .d-block:hover {
     text-decoration: none;
     color: #ffffffaf;
+}
+.mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right {
+    display:none;
+}
+
+
+
+.fa-expand {
+        font-size: calc(70px - 2rem);
+    padding-top: 2px;
+}
+
+#expand {
+    position: absolute;
+    right: 0;
+    bottom:2rem;
+        
 }
