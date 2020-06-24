@@ -62,7 +62,7 @@
                                        // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
                                        data: data,
                                        cluster: true,
-                                       clusterMaxZoom: 10, // Max zoom to cluster points on
+                                       clusterMaxZoom: 12, // Max zoom to cluster points on
                                        clusterRadius: 30 // Radius of each cluster when clustering points (defaults to 50)
                                    });
 
@@ -75,7 +75,7 @@
                                            'data': data,
                                            'cluster': true,
                                            'clusterRadius': 30,
-                                           'clusterMaxZoom': 10,
+                                           'clusterMaxZoom': 12,
                                        },
                                        filter: ['has', 'point_count'],
                                        paint: {
@@ -121,7 +121,7 @@
                                        filter: ['!', ['has', 'point_count']],
                                        paint: {
                                            'circle-color': '#a5100e',
-                                           'circle-radius': 4,
+                                           'circle-radius': 7,
                                            'circle-stroke-width': 1,
                                            'circle-stroke-color': '#fff'
                                        }
@@ -139,7 +139,7 @@
                                        var project = e.features[0].properties.project
                                        var blurb = e.features[0].properties.blurb
                                        var vidLink = e.features[0].properties.video
-                                       var description = (vidLink !== "") ? vidLink : '<div class="tan-pop"   ><h3>' + project + '</h3>' + '<img src="' + image + '" /><br><p>' + blurb + '</p></div>'                                    
+                                       var description = (vidLink !== "") ? vidLink : '<div class="tan-pop"   ><h3>' + project + '</h3>' + '<img src="' + image + '" /><br><p>' + blurb + '</p></div>'
 
                                        // Ensure that if the map is zoomed out such that multiple
                                        // copies of the feature are visible, the popup appears
@@ -156,8 +156,47 @@
                                            .setLngLat(coordinates)
                                            .setHTML(description)
                                            .addTo(map)
-                                           .setMaxWidth("600px");                                       
-                                       
+                                           .setMaxWidth("600px");
+
+                                   });
+                                   var popup = new mapboxgl.Popup({
+                                       closeButton: false,
+                                       closeOnClick: false
+                                   });
+                                   map.on('mouseenter', 'cluster-point', function (e) {
+                                       var popUps = document.getElementsByClassName('hover-container');
+                                       /** Check if there is already a popup on the map and if so, remove it */
+                                       if (popUps[0]) popUps[0].remove();
+                                       map.getCanvas().style.cursor = 'pointer';
+                                       var coordinates = e.features[0].geometry.coordinates.slice();
+
+                                       //set popup text 
+                                       //You can adjust the values of the popup to match the headers of your CSV. 
+                                       // For example: e.features[0].properties.Name is retrieving information from the field Name in the original CSV.   
+
+                                       var project = e.features[0].properties.project
+
+
+                                       // Ensure that if the map is zoomed out such that multiple
+                                       // copies of the feature are visible, the popup appears
+                                       // over the copy being pointed to.
+                                       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                                           coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                                       }
+
+                                       //add Popup to map
+
+                                       new mapboxgl.Popup({
+                                               className: 'hover-container'
+                                           })
+                                           .setLngLat(coordinates)
+                                           .setHTML(project)
+                                           .addTo(map)
+
+                                   });
+                                   map.on('mouseleave', 'cluster-point', function () {
+                                       map.getCanvas().style.cursor = '';
+                                       popup.remove();
                                    });
 
                                    // zoom fit
@@ -292,7 +331,7 @@
                                            .addTo(map)
                                            .setMaxWidth("600px");
                                    }
-                                   
+
 
                                    // Change the cursor to a pointer when the mouse is over the places layer.
                                    map.on('mouseenter', 'csvData', function () {
