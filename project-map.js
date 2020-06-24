@@ -127,7 +127,7 @@
                                        }
                                    });
 
-                                  
+
 
                                    map.on('click', 'cluster-point', function (e) {
                                        var coordinates = e.features[0].geometry.coordinates.slice();
@@ -138,18 +138,16 @@
                                        var image = e.features[0].properties.image
                                        var project = e.features[0].properties.project
                                        var blurb = e.features[0].properties.blurb
-                                       var description = '<div class="tan-pop"   ><h3>' + project + '</h3>' + '<img src="' + image + '" /><br><p>' + blurb + '</p></div>'
+                                       var vidLink = e.features[0].properties.video
+                                       var description = (vidLink !== "") ? vidLink : '<div class="tan-pop"   ><h3>' + project + '</h3>' + '<img src="' + image + '" /><br><p>' + blurb + '</p></div>'                                    
+
                                        // Ensure that if the map is zoomed out such that multiple
                                        // copies of the feature are visible, the popup appears
                                        // over the copy being pointed to.
                                        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                                            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                                        }
-                                       map.flyTo({
-                                           center: e.features[0].geometry.coordinates,
-                                           zoom: 17,
-                                           pitch: 60
-                                       });
+
                                        //add Popup to map
 
                                        new mapboxgl.Popup({
@@ -158,9 +156,11 @@
                                            .setLngLat(coordinates)
                                            .setHTML(description)
                                            .addTo(map)
-                                           .setMaxWidth("40vw");
+                                           .setMaxWidth("600px");                                       
+                                       
                                    });
-                               // zoom fit
+
+                                   // zoom fit
                                    document.getElementById('icon-button').addEventListener('click', function () {
                                        var bounds = new mapboxgl.LngLatBounds();
 
@@ -172,48 +172,45 @@
                                            padding: 40
                                        });
                                    });
-                               map.on('mousemove', 'cluster-count', function (e) {
-                                         map.getCanvas().style.cursor = 'pointer';
+                                   map.on('mousemove', 'cluster-count', function (e) {
+                                           map.getCanvas().style.cursor = 'pointer';
 
-                               }),
-                                   map.on('mouseleave', 'cluster-count', function (e) {
-                                         map.getCanvas().style.cursor = '';
+                                       }),
+                                       map.on('mouseleave', 'cluster-count', function (e) {
+                                           map.getCanvas().style.cursor = '';
 
-                               });
-                               //cluster click
-                                
-   map.on('click', 'cluster', function(e) {
-    const cluster = map.queryRenderedFeatures(e.point, { layers: ["cluster"] });
+                                       });
 
-    if (cluster[0]) {
-    // features: from the added source that are clustered
-    const pointsInCluster = data.features.filter(f => {
-        const pointPixels = map.project(f.geometry.coordinates)
-      const pixelDistance = Math.sqrt(
-        Math.pow(e.point.x - pointPixels.x, 2) + 
-        Math.pow(e.point.y - pointPixels.y, 2) 
-      );
-      return Math.abs(pixelDistance) <= cluster.clusterRadius;
-    });
-    console.log(cluster, pointsInCluster);
-	
-  }
- var bounds = new mapboxgl.LngLatBounds();
+                                   //cluster click
+                                   map.on('click', 'cluster', function (e) {
+                                       const cluster = map.queryRenderedFeatures(e.point, {
+                                           layers: ["cluster"]
+                                       });
 
-e.features.forEach(function(feature) {
-    bounds.extend(feature.geometry.coordinates);
-});
+                                       if (cluster[0]) {
+                                           // features: from the added source that are clustered
+                                           const pointsInCluster = data.features.filter(f => {
+                                               const pointPixels = map.project(f.geometry.coordinates)
+                                               const pixelDistance = Math.sqrt(
+                                                   Math.pow(e.point.x - pointPixels.x, 2) +
+                                                   Math.pow(e.point.y - pointPixels.y, 2)
+                                               );
+                                               return Math.abs(pixelDistance) <= cluster.clusterRadius;
+                                           });
+                                           console.log(cluster, pointsInCluster);
 
-map.fitBounds(bounds, {
+                                       }
+                                       var bounds = new mapboxgl.LngLatBounds();
+
+                                       e.features.forEach(function (feature) {
+                                           bounds.extend(feature.geometry.coordinates);
+                                       });
+
+                                       map.fitBounds(bounds, {
                                            padding: 40,
-    zoom:12,
-                                       }); 
-});
-
-
-
-
-
+                                           zoom: 12,
+                                       });
+                                   });
 
 
                                    data.features.forEach(function (store, i) {
@@ -282,14 +279,20 @@ map.fitBounds(bounds, {
                                        var project = currentFeature.properties.project
                                        var image = currentFeature.properties.image
                                        var blurb = currentFeature.properties.blurb
+                                       var vidLink = currentFeature.properties.video
+                                       var description = (vidLink !== "") ? vidLink : '<div class="tan-pop"   ><h3>' + project + '</h3>' + '<img src="' + image + '" /><br><p>' + blurb + '</p></div>'
+                                       var popUps = document.getElementsByClassName('popup-container');
+                                       /** Check if there is already a popup on the map and if so, remove it */
+                                       if (popUps[0]) popUps[0].remove();
                                        new mapboxgl.Popup({
-                                               className: 'popup-container'
+                                               className: 'popup-container',
                                            })
                                            .setLngLat(currentFeature.geometry.coordinates)
-                                           .setHTML('<div class="tan-pop"   ><h3>' + project + '</h3>' + '<img src="' + image + '" /><br><p>' + blurb + '</p></div>')
+                                           .setHTML(description)
                                            .addTo(map)
-                                           .setMaxWidth("40vw");
+                                           .setMaxWidth("600px");
                                    }
+                                   
 
                                    // Change the cursor to a pointer when the mouse is over the places layer.
                                    map.on('mouseenter', 'csvData', function () {
