@@ -30,6 +30,8 @@
 
                map.on('zoomend', function () {
                    var popUps = document.getElementsByClassName('popup-container');
+                   var toolTip = document.getElementsByClassName('hover-container');
+
                    var zoom = map.getZoom();
                    if (zoom > 15) {
                        map.easeTo({
@@ -44,6 +46,7 @@
                            offset: [0, 0],
                        })
                        if (popUps[0]) popUps[0].remove();
+                       if (toolTip[0]) toolTip[0].remove();
                    } else {
                        map.easeTo({
                            pitch: 0,
@@ -168,6 +171,12 @@
                                            center: coordinates,
                                            zoom: 16,
                                        });
+                                       new mapboxgl.Popup({
+                                               className: 'hover-container'
+                                           })
+                                           .setLngLat(coordinates)
+                                           .setHTML(project)
+                                           .addTo(map)
                                    });
 
                                    // Create a popup, but don't add it to the map yet.
