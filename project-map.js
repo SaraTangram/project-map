@@ -29,18 +29,26 @@
                });
 
                map.on('zoomend', function () {
+                   var popUps = document.getElementsByClassName('popup-container');
                    var zoom = map.getZoom();
-                   if (zoom > 16) {
+                   if (zoom > 15) {
                        map.easeTo({
-                           pitch: 60
+                           pitch: 60,
+                           bearing: -20,
+                           offset: [0, 500],
                        });
-                   } else if (zoom > 9) {
+                   } else if (zoom > 10) {
                        map.easeTo({
-                           pitch: 20
-                       });
+                           pitch: 20,
+                           bearing: 0,
+                           offset: [0, 0],
+                       })
+                       if (popUps[0]) popUps[0].remove();
                    } else {
                        map.easeTo({
-                           pitch: 0
+                           pitch: 0,
+                           bearing: 0,
+                           offset: [0, 0],
                        });
                    };
                });
@@ -149,7 +157,6 @@
                                        }
 
                                        //add Popup to map
-
                                        new mapboxgl.Popup({
                                                className: 'popup-container'
                                            })
@@ -157,25 +164,25 @@
                                            .setHTML(description)
                                            .addTo(map)
                                            .setMaxWidth("600px");
-
+                                       map.flyTo({
+                                           center: coordinates,
+                                           zoom: 16,
+                                       });
                                    });
-                                   var popup = new mapboxgl.Popup({
+
+                                   // Create a popup, but don't add it to the map yet.
+                                   var hovertip = new mapboxgl.Popup({
+                                       className: 'hover-container',
                                        closeButton: false,
                                        closeOnClick: false
                                    });
+
                                    map.on('mouseenter', 'cluster-point', function (e) {
-                                       var popUps = document.getElementsByClassName('hover-container');
-                                       /** Check if there is already a popup on the map and if so, remove it */
-                                       if (popUps[0]) popUps[0].remove();
+                                       // Change the cursor style as a UI indicator.
                                        map.getCanvas().style.cursor = 'pointer';
+
                                        var coordinates = e.features[0].geometry.coordinates.slice();
-
-                                       //set popup text 
-                                       //You can adjust the values of the popup to match the headers of your CSV. 
-                                       // For example: e.features[0].properties.Name is retrieving information from the field Name in the original CSV.   
-
-                                       var project = e.features[0].properties.project
-
+                                       var project = e.features[0].properties.project;
 
                                        // Ensure that if the map is zoomed out such that multiple
                                        // copies of the feature are visible, the popup appears
@@ -184,28 +191,28 @@
                                            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                                        }
 
-                                       //add Popup to map
-
-                                       new mapboxgl.Popup({
-                                               className: 'hover-container'
-                                           })
+                                       // Populate the popup and set its coordinates
+                                       // based on the feature found.
+                                       hovertip
                                            .setLngLat(coordinates)
                                            .setHTML(project)
-                                           .addTo(map)
-
+                                           .addTo(map);
                                    });
+
                                    map.on('mouseleave', 'cluster-point', function () {
                                        map.getCanvas().style.cursor = '';
-                                       popup.remove();
+                                       hovertip.remove();
                                    });
 
                                    // zoom fit
                                    document.getElementById('icon-button').addEventListener('click', function () {
                                        var bounds = new mapboxgl.LngLatBounds();
+                                       var popUps = document.getElementsByClassName('popup-container');
 
                                        data.features.forEach(function (feature) {
                                            bounds.extend(feature.geometry.coordinates);
                                        });
+                                       if (popUps[0]) popUps[0].remove();
 
                                        map.fitBounds(bounds, {
                                            padding: 40
@@ -308,8 +315,7 @@
                                    function flyToStore(currentFeature) {
                                        map.flyTo({
                                            center: currentFeature.geometry.coordinates,
-                                           zoom: 17,
-                                           pitch: 60
+                                           zoom: 16,
                                        });
                                    }
 
@@ -333,15 +339,7 @@
                                    }
 
 
-                                   // Change the cursor to a pointer when the mouse is over the places layer.
-                                   map.on('mouseenter', 'csvData', function () {
-                                       map.getCanvas().style.cursor = 'pointer';
-                                   });
 
-                                   // Change it back to a pointer when it leaves.
-                                   map.on('mouseleave', 'places', function () {
-                                       map.getCanvas().style.cursor = '';
-                                   });
 
 
 
