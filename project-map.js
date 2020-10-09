@@ -21,7 +21,7 @@
                $.ajax({
                    type: "GET",
                    //YOUR TURN: Replace with csv export link
-                   url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmRnLmKO1zcjDsjRNWQqUSU6Nas1ujNOV-zCKjMLFSpq-h3nB34wvb6w2-msYBkHDLcI7L5L4-5kD0/pub?output=csv',
+                   url: 'projectmap.csv',
                    dataType: "text",
                    success: function (csvData) {
                        makeGeoJSON(csvData);
